@@ -21,6 +21,7 @@ var connection = mysql.createConnection({
 connection.connect(function (err) {
   if (err) throw err;
   // run the start function after the connection is made to prompt the user
+  console.log("======== Welcome to the Employee Tracker Application! ========")
   start();
 });
 
@@ -164,5 +165,9 @@ function viewByRole() {
 }
 
 function updateRole() {
-  connection.query()
+  inquirer.prompt([{ 
+    input: "list",
+    message: "Update which employee?",
+    name: "update_employee"
+  }]).then
 }
