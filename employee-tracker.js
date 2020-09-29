@@ -13,12 +13,12 @@ var connection = mysql.createConnection({
   user: "root",
 
   // Your password
-  password: "RUNEscrap2020!!",
+  password: "password",
   database: "employeeTracker_DB"
 });
 
 // connect to the mysql server and sql database
-connection.connect(function(err) {
+connection.connect(function (err) {
   if (err) throw err;
   // run the start function after the connection is made to prompt the user
   start();
@@ -29,33 +29,33 @@ function start() {
   inquirer
     .prompt({
       name: "toDo",
-    //   list or input for type?
+      //   list or input for type?
       type: "list",
-      message: "WhWat would you like to do?",
+      message: "What would you like to do?",
       choices: ["Add Employee", "Add Department", "Add Role", "View All Employees", "View All Employees By Department", "View All Employees By Role", "Update Employee Role"]
     })
-    .then(function(answer) {
+    .then(function (answer) {
       // based on their answer, either call the bid or the post functions
-      switch(answer.toDo){
-          case "Add Employee": 
+      switch (answer.toDo) {
+        case "Add Employee":
           addEmployee()
           break
-          case "Add Department": 
+        case "Add Department":
           addDepartment()
           break
-          case "Add Role": 
+        case "Add Role":
           addRole()
           break
-          case "View All Employees":
+        case "View All Employees":
           viewAllEmployees()
           break
-          case "View All Employees By Department":
+        case "View All Employees By Department":
           viewByDepartment()
           break
-          case "View All Employees By Role":
+        case "View All Employees By Role":
           viewByRole()
           break
-          case "Update Employee Role":
+        case "Update Employee Role":
           updateRole()
           break
       }
@@ -63,73 +63,106 @@ function start() {
 }
 
 function addEmployee() {
+  inquirer.prompt([{
+    type: "input",
+    message: "First Name?",
+    name: "firstname"
 
+  }, {
+    type: "input",
+    message: "Last name?",
+    name: "lastname"
+
+  }, {
+    type: "input",
+    message: "Role ID number?",
+    name: "role"
+
+  }, {
+    type: "input",
+    message: "Manager ID number?",
+    name: "manager"
+
+  }]).then(function (userinput) {
+    connection.query("INSERT INTO employee(first_name, last_name, role_id, manager_id) values(?, ?, ?, ?)", [userinput.firstname, userinput.lastname, userinput.role, userinput.manager], function (error) {
+      if (error) throw error
+      console.log("Employee added successfully!")
+
+      start()
+    })
+  })
 }
 
 function addDepartment() {
- inquirer.prompt([{
-     type: "input",
-     message: "Which department?",
-     name: "department",
- }]).then(function(userinput){
-     connection.query("INSERT INTO department(department_name) values(?)", userinput.department, function(error){
-         if(error)throw error
-         console.log("Department successfully added!")
+  inquirer.prompt([{
+    type: "input",
+    message: "Which department?",
+    name: "department",
+  }]).then(function (userinput) {
+    connection.query("INSERT INTO department(department_name) values(?)", userinput.department, function (error) {
+      if (error) throw error
+      console.log("Department successfully added!")
 
-        start()
-     })
- })
+      start()
+    })
+  })
 }
 
 function addRole() {
- inquirer.prompt([{
-     type: "input",
-     message: "Which title?",
-     name: "title"
+  inquirer.prompt([{
+    type: "input",
+    message: "Which title?",
+    name: "title"
 
- },{
-     type: "input",
-     message: "Salary amount?",
-     name: "salary"
+  }, {
+    type: "input",
+    message: "Salary amount?",
+    name: "salary"
 
- }, {
-     type: "input",
-     message: "Department ID?",
-     name: "department_id"
- }]).then(function(userinput){
-    connection.query("INSERT INTO role(title, salary, department_id) values(?, ?, ?)", [userinput.title, userinput.salary, userinput.department_id], function(error){
-        if (error) throw error
-        console.log("Role added successfully!")
+  }, {
+    type: "input",
+    message: "Department ID?",
+    name: "department_id"
 
-        start()
+  }]).then(function (userinput) {
+    connection.query("INSERT INTO role(title, salary, department_id) values(?, ?, ?)", [userinput.title, userinput.salary, userinput.department_id], function (error) {
+      if (error) throw error
+      console.log("Role added successfully!")
+
+      start()
     })
- })
+  })
 }
 
 function viewAllEmployees() {
+  connection.query("SELECT * FROM employee", function (error, data) {
+    if (error) throw error
+    console.table(data)
+
+    start()
+  })
 
 }
 
 function viewByDepartment() {
-    connection.query("SELECT * FROM department", function(error, data){
-        if(error) throw error
-        console.table(data)
+  connection.query("SELECT * FROM department", function (error, data) {
+    if (error) throw error
+    console.table(data)
 
-        start()
-    })
-    
+    start()
+  })
+
 }
 
 function viewByRole() {
-    connection.query("SELECT * FROM role", 
-    function(error, data) {
-        if(error) throw error
-        console.table(data)
+  connection.query("SELECT * FROM role", function (error, data) {
+      if (error) throw error
+      console.table(data)
 
-        start()
+      start()
     })
 }
 
 function updateRole() {
-
+  connection.query()
 }
